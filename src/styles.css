@@ -1702,6 +1702,90 @@ body {
   backdrop-filter: blur(8px);
 }
 
+.project-media::before {
+  position: absolute;
+  z-index: 2;
+  top: -25%;
+  bottom: -25%;
+  left: -55%;
+  width: 38%;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.2) 45%,
+    rgba(201, 243, 107, 0.2) 55%,
+    transparent
+  );
+  content: "";
+  opacity: 0;
+  pointer-events: none;
+  transform: translateX(-120%) skewX(-18deg);
+  transition:
+    transform 0.9s cubic-bezier(0.2, 0.7, 0.2, 1),
+    opacity 0.2s ease;
+  mix-blend-mode: screen;
+}
+
+.project-overlay {
+  z-index: 3;
+}
+
+.project-card .project-media,
+.home-project-card .project-media {
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.1);
+}
+
+.project-detail-hero {
+  position: relative;
+  isolation: isolate;
+  border: 1px solid rgba(235, 238, 244, 0.16);
+  background: #171a22;
+  box-shadow:
+    0 32px 80px rgba(0, 0, 0, 0.42),
+    0 0 60px rgba(128, 111, 236, 0.1);
+}
+
+.project-detail-hero::after {
+  position: absolute;
+  z-index: 1;
+  inset: 0;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  box-shadow: inset 0 0 48px rgba(9, 10, 14, 0.2);
+  content: "";
+  pointer-events: none;
+}
+
+.project-detail-hero[data-tilt] {
+  transform: perspective(1400px) rotateX(var(--tilt-x, 0deg)) rotateY(var(--tilt-y, 0deg));
+}
+
+.project-detail-hero > img,
+.project-detail-hero > .placeholder-art {
+  transition: filter 0.45s ease;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .project-detail-hero:hover > img {
+    filter: saturate(1.08) contrast(1.02);
+  }
+
+  .project-card:hover .project-media::before,
+  .project-card-link:focus-visible .project-media::before,
+  .home-project-card:hover .project-media::before,
+  .home-project-card:focus-visible .project-media::before {
+    opacity: 1;
+    transform: translateX(420%) skewX(-18deg);
+  }
+
+  .project-card:hover {
+    transform: translateY(-7px) perspective(1400px) rotateX(1deg);
+  }
+
+  .home-project-card:hover {
+    transform: translateY(-6px) perspective(1400px) rotateX(1deg);
+  }
+}
+
 .about-hero {
   color: #f2f1ed;
   background:
@@ -1898,6 +1982,32 @@ body {
   .hero-project-preview,
   .work-poster-orbit {
     animation: none !important;
+  }
+
+  .project-media::before {
+    opacity: 0;
+    transform: none;
+    transition: none;
+  }
+
+  .project-card:hover .project-media::before,
+  .project-card-link:focus-visible .project-media::before,
+  .home-project-card:hover .project-media::before,
+  .home-project-card:focus-visible .project-media::before {
+    opacity: 0 !important;
+    transform: none !important;
+  }
+
+  .project-card:hover,
+  .home-project-card:hover,
+  .project-detail-hero[data-tilt] {
+    transform: none !important;
+    transition: none;
+  }
+
+  .project-detail-hero > img,
+  .project-detail-hero > .placeholder-art {
+    transition: none;
   }
 
   [data-tilt] {

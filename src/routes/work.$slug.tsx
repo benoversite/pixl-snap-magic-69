@@ -42,14 +42,20 @@ function CaseStudy() {
   const { project: p, prev, next } = Route.useLoaderData();
   return (
     <article>
-      <header className="container-x pb-10 pt-10 md:pt-16">
+      <header className="container-x pb-10 pt-10 md:pt-16" data-motion-reveal>
         <Link to="/work" className="link-underline text-sm text-muted-foreground">← Back to all work</Link>
         <p className="eyebrow mt-8 !text-accent">{p.year ? `${p.category} · ${p.year}` : p.category}</p>
         <h1 className="font-display mt-3 text-5xl md:text-8xl">{p.title}</h1>
         <p className="mt-5 max-w-2xl text-lg text-muted-foreground">{p.summary}</p>
       </header>
       <div className="container-x">
-        <div className="aspect-[16/9] overflow-hidden rounded-2xl"><ProjectCover project={p} /></div>
+        <div
+          className="project-detail-hero aspect-[16/9] overflow-hidden rounded-2xl"
+          data-image-reveal
+          data-tilt
+        >
+          <ProjectCover project={p} />
+        </div>
       </div>
       <div className="container-x py-12 md:py-20">
         <Block title="About this project">{p.overview}</Block>
