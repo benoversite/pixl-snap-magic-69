@@ -554,7 +554,7 @@ main {
   color: #fff;
   background: #15141a;
   animation: loader-exit 0.7s cubic-bezier(0.76, 0, 0.24, 1)
-    calc(1.85s + var(--intro-extra-delay)) forwards;
+    calc(6.85s + var(--intro-extra-delay)) forwards;
 }
 
 .loader-greeting {
@@ -566,7 +566,7 @@ main {
   clip-path: inset(0 100% 0 0);
   animation:
     greeting-write 0.7s cubic-bezier(0.65, 0, 0.35, 1) 0.18s forwards,
-    greeting-leave 0.25s ease calc(1.12s + var(--intro-extra-delay)) forwards;
+    greeting-leave 0.25s ease calc(6.12s + var(--intro-extra-delay)) forwards;
 }
 
 .loader-panels {

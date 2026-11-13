@@ -7,7 +7,7 @@ import Lenis from "lenis";
 gsap.registerPlugin(ScrollTrigger);
 
 const loaderKey = "benjamin-portfolio-intro-seen";
-const introDuration = 2850;
+const introDuration = 7850;
 
 function prefersReducedMotion() {
   return window.matchMedia("(prefers-reduced-motion: reduce)").matches;
