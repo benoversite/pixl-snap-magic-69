@@ -7,7 +7,7 @@ import Lenis from "lenis";
 gsap.registerPlugin(ScrollTrigger);
 
 const loaderKey = "benjamin-portfolio-intro-seen";
-const introDuration = 5550;
+const introDuration = 2850;
 
 function prefersReducedMotion() {
   return window.matchMedia("(prefers-reduced-motion: reduce)").matches;
@@ -120,6 +120,48 @@ export function SiteMotion() {
   useEffect(() => {
     if (reducedMotion) return;
 
+    const pressedTargets = new Map<HTMLElement, number>();
+    const onPointerDown = (event: PointerEvent) => {
+      const target = (event.target as HTMLElement | null)?.closest<HTMLElement>(
+        ".btn, .hero-project-preview, .home-project-card, .project-card-link, .work-filter button",
+      );
+      if (!target) return;
+
+      const rect = target.getBoundingClientRect();
+      target.style.setProperty("--press-x", `${event.clientX - rect.left}px`);
+      target.style.setProperty("--press-y", `${event.clientY - rect.top}px`);
+      target.classList.remove("is-pressed");
+      void target.offsetWidth;
+      target.classList.add("is-pressed");
+
+      const previousTimer = pressedTargets.get(target);
+      if (previousTimer) window.clearTimeout(previousTimer);
+      pressedTargets.set(
+        target,
+        window.setTimeout(() => {
+          target.classList.remove("is-pressed");
+          target.style.removeProperty("--press-x");
+          target.style.removeProperty("--press-y");
+          pressedTargets.delete(target);
+        }, 550),
+      );
+    };
+
+    document.addEventListener("pointerdown", onPointerDown);
+    return () => {
+      document.removeEventListener("pointerdown", onPointerDown);
+      pressedTargets.forEach((timer, target) => {
+        window.clearTimeout(timer);
+        target.classList.remove("is-pressed");
+        target.style.removeProperty("--press-x");
+        target.style.removeProperty("--press-y");
+      });
+    };
+  }, [reducedMotion]);
+
+  useEffect(() => {
+    if (reducedMotion) return;
+
     const ctx = gsap.context(() => {
       gsap.utils.toArray<HTMLElement>("[data-motion-title]").forEach((title) => {
         gsap.fromTo(
@@ -132,7 +174,7 @@ export function SiteMotion() {
             duration: 1.05,
             stagger: 0.02,
             ease: "power4.out",
-            delay: loaderActive.current ? 3.8 : 0.12,
+            delay: loaderActive.current ? 0.65 : 0.12,
           },
         );
       });
@@ -148,7 +190,7 @@ export function SiteMotion() {
             duration: 0.7,
             stagger: 0.08,
             ease: "power2.out",
-            delay: loaderActive.current ? 4.2 : 0.35,
+            delay: loaderActive.current ? 0.8 : 0.35,
           },
         );
       }
@@ -156,12 +198,19 @@ export function SiteMotion() {
       gsap.utils.toArray<HTMLElement>("[data-motion-reveal]").forEach((element) => {
         gsap.fromTo(
           element,
-          { y: 30, autoAlpha: 0, clipPath: "inset(0 0 12% 0)" },
+          {
+            y: 42,
+            rotateX: 4,
+            transformPerspective: 900,
+            autoAlpha: 0,
+            clipPath: "inset(0 0 12% 0)",
+          },
           {
             y: 0,
+            rotateX: 0,
             autoAlpha: 1,
             clipPath: "inset(0 0 0% 0)",
-            duration: 0.8,
+            duration: 0.9,
             ease: "power3.out",
             scrollTrigger: { trigger: element, start: "top 88%", once: true },
           },
@@ -229,12 +278,22 @@ export function SiteMotion() {
     const moveRingY = gsap.quickTo(ring, "y", { duration: 0.42, ease: "power3.out" });
     let currentTarget: HTMLElement | null = null;
     let currentMagnet: HTMLElement | null = null;
+    let currentTilt: HTMLElement | null = null;
     let currentLiquid: HTMLElement | null = null;
     let previousX = 0;
     let previousY = 0;
     let liquidTarget = 0;
     let liquidCurrent = 0;
     let animationFrame = 0;
+
+    const resetTilt = (element: HTMLElement | null) => {
+      if (!element) return;
+      element.classList.remove("is-tilting");
+      element.style.removeProperty("--tilt-x");
+      element.style.removeProperty("--tilt-y");
+      element.style.removeProperty("--glare-x");
+      element.style.removeProperty("--glare-y");
+    };
 
     const updateLiquid = () => {
       liquidCurrent += (liquidTarget - liquidCurrent) * 0.18;
@@ -280,6 +339,23 @@ export function SiteMotion() {
         );
       }
 
+      const tiltTarget =
+        (event.target as HTMLElement | null)?.closest<HTMLElement>("[data-tilt]") ?? null;
+      if (tiltTarget !== currentTilt) {
+        resetTilt(currentTilt);
+        currentTilt = tiltTarget;
+      }
+      if (currentTilt) {
+        const rect = currentTilt.getBoundingClientRect();
+        const x = (event.clientX - rect.left) / rect.width;
+        const y = (event.clientY - rect.top) / rect.height;
+        currentTilt.style.setProperty("--tilt-x", `${(0.5 - y) * 9}deg`);
+        currentTilt.style.setProperty("--tilt-y", `${(x - 0.5) * 12}deg`);
+        currentTilt.style.setProperty("--glare-x", `${x * 100}%`);
+        currentTilt.style.setProperty("--glare-y", `${y * 100}%`);
+        currentTilt.classList.add("is-tilting");
+      }
+
       const liquidTargetElement = (event.target as HTMLElement | null)?.closest<HTMLElement>(
         "[data-liquid]",
       );
@@ -316,6 +392,8 @@ export function SiteMotion() {
       currentMagnet?.style.setProperty("--mag-x", "0px");
       currentMagnet?.style.setProperty("--mag-y", "0px");
       currentMagnet = null;
+      resetTilt(currentTilt);
+      currentTilt = null;
       currentLiquid?.classList.remove("is-liquid-active");
       currentLiquid = null;
       liquidTarget = 0;
@@ -331,6 +409,7 @@ export function SiteMotion() {
       document.removeEventListener("pointerleave", onLeave);
       currentMagnet?.style.removeProperty("--mag-x");
       currentMagnet?.style.removeProperty("--mag-y");
+      resetTilt(currentTilt);
       currentLiquid?.classList.remove("is-liquid-active");
       if (animationFrame) window.cancelAnimationFrame(animationFrame);
     };

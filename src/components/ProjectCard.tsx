@@ -37,7 +37,11 @@ export function ProjectCard({ project }: { project: Project }) {
         aria-label={`View project: ${project.title}`}
         className="project-card-link block"
       >
-        <div className="project-media aspect-[4/3] overflow-hidden rounded-2xl" data-image-reveal>
+        <div
+          className="project-media aspect-[4/3] overflow-hidden rounded-2xl"
+          data-image-reveal
+          data-tilt
+        >
           <ProjectCover project={project} />
           <div className="project-overlay" aria-hidden="true">
             <span className="eyebrow !text-white/70">{project.category}</span>

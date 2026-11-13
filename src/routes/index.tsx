@@ -72,13 +72,40 @@ function HomePage() {
             </a>
           </div>
 
-          <div className="hero-panel">
+          <div className="hero-panel" data-hero-scene>
             <div className="hero-card aspect-[4/5]">
               <Portrait className="h-full w-full rounded-none" />
             </div>
             <div className="metric-card">
               <strong>{profile.initials}</strong>
               <span>{profile.headline}</span>
+            </div>
+            <div
+              className="hero-project-orbit"
+              data-parallax
+              aria-label="Featured project previews"
+            >
+              {featuredProjects.slice(0, 2).map((project, index) => (
+                <Link
+                  key={project.slug}
+                  to="/work/$slug"
+                  params={{ slug: project.slug }}
+                  aria-label={`View project: ${project.title}`}
+                  data-cursor="VIEW"
+                  data-tilt
+                  className={`hero-project-preview hero-project-preview-${index + 1}`}
+                >
+                  <ProjectCover project={project} />
+                  <span className="hero-project-preview-shade" aria-hidden="true" />
+                  <span className="hero-project-preview-meta">
+                    <span>{project.category}</span>
+                    <strong>{project.title}</strong>
+                  </span>
+                  <span className="hero-project-preview-index" aria-hidden="true">
+                    0{index + 1}
+                  </span>
+                </Link>
+              ))}
             </div>
           </div>
         </div>
@@ -125,7 +152,11 @@ function HomePage() {
                 data-motion-reveal
                 className="home-project-card group"
               >
-                <div className="project-media aspect-[4/3] overflow-hidden" data-image-reveal>
+                <div
+                  className="project-media aspect-[4/3] overflow-hidden"
+                  data-image-reveal
+                  data-tilt
+                >
                   <ProjectCover project={project} />
                   <span className="project-view-cta" aria-hidden="true">
                     VIEW
