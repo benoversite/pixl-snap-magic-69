@@ -83,7 +83,7 @@ export function SiteHeader() {
             aria-label={open ? "Close menu" : "Open menu"}
             aria-expanded={open}
             onClick={() => setOpen(!open)}
-            className="inline-flex h-10 items-center gap-2 rounded-full bg-foreground px-3 text-xs font-semibold text-white shadow-md transition-all hover:-translate-y-0.5 hover:shadow-lg focus-visible:outline-white"
+            className="inline-flex h-10 items-center gap-2 rounded-full border border-border bg-card px-3 text-xs font-semibold text-card-foreground shadow-md transition-all hover:-translate-y-0.5 hover:shadow-lg focus-visible:outline-white"
           >
             {open ? (
               <X size={17} strokeWidth={2.5} aria-hidden="true" />

@@ -30,7 +30,7 @@ export function SkillsSection() {
         <p className="eyebrow">Tools I use</p>
         <ul className="mt-4 flex flex-wrap gap-2">
           {tools.map((t) => (
-            <li key={t} className="rounded-full border border-black/5 bg-white/50 px-3.5 py-1.5 text-sm text-muted-foreground">
+            <li key={t} className="rounded-full border border-border bg-secondary px-3.5 py-1.5 text-sm text-secondary-foreground">
               {t}
             </li>
           ))}
@@ -85,7 +85,7 @@ export function ExperienceSection() {
       <div className="mt-16">
         <p className="eyebrow">Education</p>
         {education.map((ed) => (
-          <div key={ed.course} className={`mt-5 grid gap-3 rounded-[1.6rem] border border-black/5 bg-white/40 p-5 ${ed.dates ? "md:grid-cols-[14rem_1fr]" : ""}`}>
+          <div key={ed.course} className={`experience-card mt-5 grid gap-3 rounded-[1.6rem] p-5 ${ed.dates ? "md:grid-cols-[14rem_1fr]" : ""}`}>
             {ed.dates && <p className="text-sm text-muted-foreground">{ed.dates}</p>}
             <div>
               <h3 className="text-xl font-semibold text-foreground">{ed.course}</h3>
@@ -100,7 +100,7 @@ export function ExperienceSection() {
         <p className="eyebrow">Volunteering & Leadership</p>
         <div className="mt-5 grid gap-5 md:grid-cols-2">
           {volunteering.map((v) => (
-            <div key={v.position} className="rounded-[1.6rem] border border-black/5 bg-white/40 p-5">
+            <div key={v.position} className="experience-card rounded-[1.6rem] p-5">
               <h3 className="text-xl font-semibold text-foreground">{v.position}</h3>
               <p className="mt-1 text-muted-foreground">{v.organization}, {v.location}</p>
               <p className="mt-3 text-base leading-relaxed text-muted-foreground">{v.description}</p>
