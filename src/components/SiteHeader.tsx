@@ -27,6 +27,7 @@ export function SiteHeader() {
       className={`site-header sticky top-0 z-50 transition-all duration-300 ${
         scrolled || open ? "is-scrolled" : ""
       }`}
+      data-liquid-glass
     >
       <div className="container-x relative flex h-16 items-center justify-between gap-3">
         <Link

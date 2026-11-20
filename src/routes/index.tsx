@@ -29,7 +29,7 @@ function HomePage() {
   return (
     <>
       <section className="container-x py-8 md:py-14">
-        <div className="hero-shell">
+        <div className="hero-shell" data-liquid-glass>
           <div className="relative z-10 py-3 md:py-6">
             <span className="apple-pill" data-motion-meta>
               {profile.status}
@@ -182,7 +182,10 @@ function HomePage() {
       </section>
 
       <section className="container-x pb-16 md:pb-24">
-        <div className="surface-panel flex flex-col gap-6 rounded-2xl p-6 md:flex-row md:items-center md:justify-between md:p-10">
+        <div
+          className="surface-panel flex flex-col gap-6 rounded-2xl p-6 md:flex-row md:items-center md:justify-between md:p-10"
+          data-liquid-glass
+        >
           <div>
             <p className="eyebrow">Got something in mind?</p>
             <h2 className="font-display mt-2 text-3xl md:text-4xl">Let’s talk about it.</h2>

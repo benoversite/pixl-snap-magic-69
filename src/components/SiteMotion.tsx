@@ -35,6 +35,7 @@ function IntroLoader({ onComplete }: { onComplete: () => void }) {
 function CustomCursor() {
   return (
     <div className="custom-cursor" aria-hidden="true">
+      <span className="liquid-glass-lens" />
       <span className="cursor-dot" />
       <span className="cursor-ring">
         <span className="cursor-label" />
@@ -46,6 +47,22 @@ function CustomCursor() {
 function LiquidFilter() {
   return (
     <svg className="motion-defs" aria-hidden="true" focusable="false">
+      <filter id="liquid-glass" x="-20%" y="-20%" width="140%" height="140%">
+        <feTurbulence
+          type="fractalNoise"
+          baseFrequency="0.012 0.018"
+          numOctaves="2"
+          seed="7"
+          result="glassNoise"
+        />
+        <feDisplacementMap
+          in="SourceGraphic"
+          in2="glassNoise"
+          scale="2"
+          xChannelSelector="R"
+          yChannelSelector="B"
+        />
+      </filter>
       <filter id="liquid-text">
         <feTurbulence
           className="liquid-turbulence"
@@ -263,19 +280,22 @@ export function SiteMotion() {
     if (!finePointer.matches) return;
 
     const cursor = document.querySelector<HTMLElement>(".custom-cursor");
+    const glassLens = cursor?.querySelector<HTMLElement>(".liquid-glass-lens");
     const dot = cursor?.querySelector<HTMLElement>(".cursor-dot");
     const ring = cursor?.querySelector<HTMLElement>(".cursor-ring");
     const label = cursor?.querySelector<HTMLElement>(".cursor-label");
     const displacement =
       document.querySelector<SVGFEDisplacementMapElement>(".liquid-displacement");
     const turbulence = document.querySelector<SVGFETurbulenceElement>(".liquid-turbulence");
-    if (!cursor || !dot || !ring || !label || !displacement || !turbulence) return;
+    if (!cursor || !glassLens || !dot || !ring || !label || !displacement || !turbulence) return;
 
     document.body.classList.add("has-custom-cursor");
     const moveDotX = gsap.quickTo(dot, "x", { duration: 0.1, ease: "power3.out" });
     const moveDotY = gsap.quickTo(dot, "y", { duration: 0.1, ease: "power3.out" });
     const moveRingX = gsap.quickTo(ring, "x", { duration: 0.42, ease: "power3.out" });
     const moveRingY = gsap.quickTo(ring, "y", { duration: 0.42, ease: "power3.out" });
+    const moveLensX = gsap.quickTo(glassLens, "x", { duration: 0.58, ease: "power3.out" });
+    const moveLensY = gsap.quickTo(glassLens, "y", { duration: 0.58, ease: "power3.out" });
     let currentTarget: HTMLElement | null = null;
     let currentMagnet: HTMLElement | null = null;
     let currentTilt: HTMLElement | null = null;
@@ -311,6 +331,13 @@ export function SiteMotion() {
       moveDotY(event.clientY);
       moveRingX(event.clientX);
       moveRingY(event.clientY);
+      moveLensX(event.clientX);
+      moveLensY(event.clientY);
+
+      const delta = Math.hypot(event.clientX - previousX, event.clientY - previousY);
+      const lensVelocity = Math.min(1, delta / 18);
+      glassLens.style.setProperty("--glass-wobble", `${4 + lensVelocity * 7}px`);
+      glassLens.style.setProperty("--glass-scale", `${1 + lensVelocity * 0.12}`);
 
       const target =
         (event.target as HTMLElement | null)?.closest<HTMLElement>("a, button, [data-cursor]") ??
@@ -318,6 +345,10 @@ export function SiteMotion() {
       if (target !== currentTarget) {
         currentTarget = target;
         cursor.classList.toggle("is-active", Boolean(target));
+        glassLens.classList.toggle(
+          "is-active",
+          Boolean(target?.closest("[data-liquid-glass], [data-magnetic], [data-tilt]")),
+        );
         label.textContent = target?.dataset["cursor"] ?? (target ? "OPEN" : "");
       }
 
@@ -388,6 +419,7 @@ export function SiteMotion() {
 
     const onLeave = () => {
       cursor.classList.remove("is-ready", "is-active");
+      glassLens.classList.remove("is-active");
       currentTarget = null;
       currentMagnet?.style.setProperty("--mag-x", "0px");
       currentMagnet?.style.setProperty("--mag-y", "0px");
